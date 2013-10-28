@@ -25,13 +25,13 @@ namespace CsvCachedWebApp.Commands
 
     public class SimpleRecord : IDedRecord
     {
+        public string other { get; set; }
 
         public SimpleRecord()
         {
 
         }
-
-        public string other { get; set; }
+        
         public SimpleRecord(string id, string other)
         {
             this.Id = id;
@@ -44,7 +44,7 @@ namespace CsvCachedWebApp.Commands
     {
         public override void CreateMap()
         {
-            Map(m => m.Id).Name("ID");
+            base.CreateMap();
             Map(m => m.other).Name("OTHER");
         }
 
@@ -54,13 +54,13 @@ namespace CsvCachedWebApp.Commands
 
     public class AnotherSimpleRecord : IDedRecord
     {
+        public string another { get; set; }
 
         public AnotherSimpleRecord()
         {
 
         }
-
-        public string another { get; set; }
+        
         public AnotherSimpleRecord(string id, string other)
         {
             this.Id = id;
@@ -73,7 +73,7 @@ namespace CsvCachedWebApp.Commands
     {
         public override void CreateMap()
         {
-            Map(m => m.Id).Name("ID");
+            base.CreateMap();
             Map(m => m.another).Name("ANOTHER");
         }
 

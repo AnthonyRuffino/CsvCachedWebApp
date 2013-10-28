@@ -13,47 +13,51 @@ namespace CsvCachedWebApp.Commands
 {
 
 
-    public class CacheCsvCommand<T, U> : AbstractCommand
+    public class UpdateCsvAndCacheCommand<T, U> : AbstractCommand
         where T : IDedRecord
         where U : IDedRecordClassMap<T>
     {
 
         public string path { get; set; }
         public string cacheName { get; set; }
+        public List<T> records { get; set; }
 
         private HttpApplicationStateBase applicationStateBase { get; set; }
 
-        public CacheCsvCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase)
+        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, List<T> records)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.applicationStateBase = applicationStateBase;
+            this.records = records;
         }
 
-        public CacheCsvCommand(string cacheName, string path, HttpApplicationState applicationState)
-            : this(cacheName, path, new HttpApplicationStateWrapper(applicationState))
+        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationState applicationState, List<T> records)
+            : this(cacheName, path, new HttpApplicationStateWrapper(applicationState), records)
         {
 
         }
 
         public override void execute()
         {
-            var csv = new CsvReader(new StreamReader(path));
+            TextWriter textWriter = new StreamWriter(path);
 
-            csv.Configuration.RegisterClassMap<U>();
+            CsvWriter writer = new CsvWriter(textWriter);
+            writer.Configuration.RegisterClassMap<U>();
+            
 
             Dictionary<string, T> repository = new Dictionary<string, T>();
 
-            while (csv.Read())
+            foreach (T record in records)
             {
-                T record = csv.GetRecord<T>();
-
                 if (!repository.ContainsKey(record.Id))
                 {
                     repository.Add(record.Id, record);
+                    writer.WriteRecord(record);
                 }
-
             }
+
+            textWriter.Close();
 
             applicationStateBase[cacheName] = repository;
 
