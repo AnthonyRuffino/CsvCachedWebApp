@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>AsyncCommander</id>
+    <version>1.0.3</version>
+    <authors>Anthony Ruffino</authors>
+    <owners>Anthony Ruffino</owners>
+    <licenseUrl>http://www.gnu.org/copyleft/gpl.html</licenseUrl>
+    <projectUrl>https://github.com/AnthonyRuffino/AsyncCommander</projectUrl>
+    <iconUrl>http://opensource.org/trademarks/opensource/OSI-logo-100x117.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Asynchronous API of the command pattern for C#.</description>
+    <releaseNotes>Initial Release.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>Command Pattern</tags>
+  </metadata>
+</package>

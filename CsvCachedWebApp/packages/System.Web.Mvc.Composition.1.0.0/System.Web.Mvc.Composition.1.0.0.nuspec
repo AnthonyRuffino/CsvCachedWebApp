@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>System.Web.Mvc.Composition</id>
+    <version>1.0.0</version>
+    <title>System.Web.Mvc.Composition</title>
+    <authors>Nikos Baxevanis</authors>
+    <owners>Nikos Baxevanis</owners>
+    <projectUrl>https://github.com/moodmosaic/System.Web.Mvc.Composition</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A set of types for managing the composition of multiple IControllerFactory implementations.</description>
+    <summary>A set of types for managing the composition of multiple IControllerFactory implementations.</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>ASP.NET MVC IControllerFactory Composition</tags>
+  </metadata>
+</package>
