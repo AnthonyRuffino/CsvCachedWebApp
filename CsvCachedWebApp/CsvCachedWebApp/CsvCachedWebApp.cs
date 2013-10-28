@@ -51,7 +51,7 @@ namespace CsvCachedWebApp
 
             string rootName = "simpleRecord";
             string fileName = rootName + ".csv";
-            string path = cacheFolder + "\\" + fileName + ".csv";
+            string path = cacheFolder + "\\" + fileName;
             string cacheName = rootName + "-cache";
             string cacheJobName = rootName + "-cached-job";
 
@@ -64,7 +64,7 @@ namespace CsvCachedWebApp
 
             rootName = "anotherSimpleRecord";
             fileName = rootName + ".csv";
-            path = cacheFolder + "\\" + fileName + ".csv";
+            path = cacheFolder + "\\" + fileName;
             cacheName = rootName + "-cache";
             cacheJobName = rootName + "-cached-job";
 

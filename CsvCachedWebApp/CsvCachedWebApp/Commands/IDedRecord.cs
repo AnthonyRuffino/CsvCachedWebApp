@@ -26,6 +26,11 @@ namespace CsvCachedWebApp.Commands
     public class SimpleRecord : IDedRecord
     {
 
+        public SimpleRecord()
+        {
+
+        }
+
         public string other { get; set; }
         public SimpleRecord(string id, string other)
         {
@@ -49,6 +54,11 @@ namespace CsvCachedWebApp.Commands
 
     public class AnotherSimpleRecord : IDedRecord
     {
+
+        public AnotherSimpleRecord()
+        {
+
+        }
 
         public string another { get; set; }
         public AnotherSimpleRecord(string id, string other)
