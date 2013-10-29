@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,8 +35,21 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-            Command updateCsvAndCacheCommand = new UpdateCsvAndCacheCommand<T, U>(cacheName, path, applicationStateBase, recordRetriever.getRecords());
-            updateCsvAndCacheCommand.executeAsynchronously();
+            try
+            {
+                if (recordRetriever != null)
+                {
+                    Command updateCsvAndCacheCommand = new UpdateCsvAndCacheCommand<T, U>(cacheName, path, applicationStateBase, recordRetriever.getRecords());
+                    updateCsvAndCacheCommand.executeAsynchronously();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (CsvCachedWebApplication.DEBUG_MODE)
+                {
+                    Debug.WriteLine("Error executing command: " + ex.StackTrace);
+                }
+            }
         }
 
         public override void undo()

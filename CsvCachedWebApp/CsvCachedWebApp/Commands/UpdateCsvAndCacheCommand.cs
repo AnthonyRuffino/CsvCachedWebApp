@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -40,28 +41,42 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-            Dictionary<string, T> repository = null;
-
-            using(TextWriter textWriter = new StreamWriter(path))
-            using (CsvWriter writer = new CsvWriter(textWriter))
+            try
             {
-                writer.Configuration.RegisterClassMap<U>();
-
-
-                repository = new Dictionary<string, T>();
-
-                foreach (T record in records)
+                if (records != null)
                 {
-                    if (!repository.ContainsKey(record.Id))
+                    Dictionary<string, T> repository = null;
+
+                    using (TextWriter textWriter = new StreamWriter(path))
+                    using (CsvWriter writer = new CsvWriter(textWriter))
                     {
-                        repository.Add(record.Id, record);
-                        writer.WriteRecord(record);
+                        writer.Configuration.RegisterClassMap<U>();
+                        repository = new Dictionary<string, T>();
+
+                        foreach (T record in records)
+                        {
+                            if (record != null && !repository.ContainsKey(record.Id))
+                            {
+                                repository.Add(record.Id, record);
+                                writer.WriteRecord(record);
+                            }
+                        }
+
+                    }
+
+                    if (applicationStateBase != null && cacheName != null)
+                    {
+                        applicationStateBase[cacheName] = repository;
                     }
                 }
-
             }
-
-            applicationStateBase[cacheName] = repository;
+            catch (Exception ex)
+            {
+                if (CsvCachedWebApplication.DEBUG_MODE)
+                {
+                    Debug.WriteLine("Error executing command: " + ex.StackTrace);
+                }
+            }
 
         }
 

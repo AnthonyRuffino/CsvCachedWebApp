@@ -53,7 +53,7 @@
     <Compile Include="Commands\UpdateCsvFromDbCommand.cs" />
     <Compile Include="Commands\UpdateCsvAndCacheCommand.cs" />
     <Compile Include="Commands\UpdateCsvCommand.cs" />
-    <Compile Include="CsvCachedWebApp.cs" />
+    <Compile Include="CsvCachedWebApplication.cs" />
     <Compile Include="DbLink\IRecordRetriever.cs" />
     <Compile Include="Scheduler\ICachedTaskScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

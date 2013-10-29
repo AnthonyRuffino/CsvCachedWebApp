@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,7 +58,18 @@ namespace CsvCachedWebApp.Scheduler
 
                 if (responseCode == TASK_SCHEDULED_SUCCESSFULLY)
                 {
-                    scheduleTask(name, seconds);
+                    try
+                    {
+                        scheduleTask(name, seconds);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (CsvCachedWebApplication.DEBUG_MODE)
+                        {
+                            Debug.WriteLine("Error scheduling command {" + name + "}: " + ex.StackTrace);
+                            responseCode = TASK_SCHEDULE_ERROR;
+                        }
+                    }
                 }
             }
 
@@ -69,26 +81,43 @@ namespace CsvCachedWebApp.Scheduler
 
         protected void scheduleTask(string name, int seconds)
         {
+
             OnCacheRemove = new System.Web.Caching.CacheItemRemovedCallback(CacheItemRemoved);
 
             WebApp.Context.Cache.Insert(name, seconds, null,
                 DateTime.Now.AddSeconds(seconds), System.Web.Caching.Cache.NoSlidingExpiration,
                 System.Web.Caching.CacheItemPriority.NotRemovable, OnCacheRemove);
+            
         }
 
 
         protected void CacheItemRemoved(string k, object v, System.Web.Caching.CacheItemRemovedReason r)
         {
-
             if (scheduledCommands != null)
             {
                 if (scheduledCommands.ContainsKey(k) && scheduledCommands[k] != null)
                 {
-                    scheduledCommands[k].executeAsynchronously();
-                    scheduleTask(k, Convert.ToInt32(v));
+                    try
+                    {
+                        scheduledCommands[k].executeAsynchronously();
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            scheduleTask(k, Convert.ToInt32(v));
+                        }
+                        catch (Exception ex)
+                        {
+                            if (CsvCachedWebApplication.DEBUG_MODE)
+                            {
+                                Debug.WriteLine("Error removing cache item {" + k + "}: " + ex.StackTrace);
+                            }
+                        }
+                    }
                 }
-
             }
+
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,11 +32,21 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-            using(TextWriter textWriter = new StreamWriter(path))
-            using (CsvWriter writer = new CsvWriter(textWriter))
+            try
             {
-                writer.Configuration.RegisterClassMap<U>();
-                writer.WriteRecords(records);
+                using (TextWriter textWriter = new StreamWriter(path))
+                using (CsvWriter writer = new CsvWriter(textWriter))
+                {
+                    writer.Configuration.RegisterClassMap<U>();
+                    writer.WriteRecords(records);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (CsvCachedWebApplication.DEBUG_MODE)
+                {
+                    Debug.WriteLine("Error executing command: " + ex.StackTrace);
+                }
             }
 
         }

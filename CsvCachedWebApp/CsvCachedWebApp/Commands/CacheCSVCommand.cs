@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,29 +39,41 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-
-            Dictionary<string, T> repository = null;
-
-            using (StreamReader streamReader = new StreamReader(path))
-            using (CsvReader csv = new CsvReader(streamReader))
+            try
             {
-                repository = new Dictionary<string, T>();
-
-                csv.Configuration.RegisterClassMap<U>();
-
-                while (csv.Read())
+                if (cacheName != null && applicationStateBase != null)
                 {
-                    T record = csv.GetRecord<T>();
+                    Dictionary<string, T> repository = null;
 
-                    if (!repository.ContainsKey(record.Id))
+                    using (StreamReader streamReader = new StreamReader(path))
+                    using (CsvReader csv = new CsvReader(streamReader))
                     {
-                        repository.Add(record.Id, record);
+                        repository = new Dictionary<string, T>();
+
+                        csv.Configuration.RegisterClassMap<U>();
+
+                        while (csv.Read())
+                        {
+                            T record = csv.GetRecord<T>();
+
+                            if (record != null && !repository.ContainsKey(record.Id))
+                            {
+                                repository.Add(record.Id, record);
+                            }
+
+                        }
                     }
 
+                    applicationStateBase[cacheName] = repository;
                 }
             }
-
-            applicationStateBase[cacheName] = repository;
+            catch (Exception ex)
+            {
+                if (CsvCachedWebApplication.DEBUG_MODE)
+                {
+                    Debug.WriteLine("Error executing command: " + ex.StackTrace);
+                }
+            }
 
         }
 
