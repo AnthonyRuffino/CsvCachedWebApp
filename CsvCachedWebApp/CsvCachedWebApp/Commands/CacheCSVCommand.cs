@@ -38,21 +38,26 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-            var csv = new CsvReader(new StreamReader(path));
 
-            csv.Configuration.RegisterClassMap<U>();
+            Dictionary<string, T> repository = null;
 
-            Dictionary<string, T> repository = new Dictionary<string, T>();
-
-            while (csv.Read())
+            using (StreamReader streamReader = new StreamReader(path))
+            using (CsvReader csv = new CsvReader(streamReader))
             {
-                T record = csv.GetRecord<T>();
+                repository = new Dictionary<string, T>();
 
-                if (!repository.ContainsKey(record.Id))
+                csv.Configuration.RegisterClassMap<U>();
+
+                while (csv.Read())
                 {
-                    repository.Add(record.Id, record);
-                }
+                    T record = csv.GetRecord<T>();
 
+                    if (!repository.ContainsKey(record.Id))
+                    {
+                        repository.Add(record.Id, record);
+                    }
+
+                }
             }
 
             applicationStateBase[cacheName] = repository;

@@ -40,24 +40,26 @@ namespace CsvCachedWebApp.Commands
 
         public override void execute()
         {
-            TextWriter textWriter = new StreamWriter(path);
+            Dictionary<string, T> repository = null;
 
-            CsvWriter writer = new CsvWriter(textWriter);
-            writer.Configuration.RegisterClassMap<U>();
-            
-
-            Dictionary<string, T> repository = new Dictionary<string, T>();
-
-            foreach (T record in records)
+            using(TextWriter textWriter = new StreamWriter(path))
+            using (CsvWriter writer = new CsvWriter(textWriter))
             {
-                if (!repository.ContainsKey(record.Id))
-                {
-                    repository.Add(record.Id, record);
-                    writer.WriteRecord(record);
-                }
-            }
+                writer.Configuration.RegisterClassMap<U>();
 
-            textWriter.Close();
+
+                repository = new Dictionary<string, T>();
+
+                foreach (T record in records)
+                {
+                    if (!repository.ContainsKey(record.Id))
+                    {
+                        repository.Add(record.Id, record);
+                        writer.WriteRecord(record);
+                    }
+                }
+
+            }
 
             applicationStateBase[cacheName] = repository;
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using AsyncCommander;
+using CsvCachedWebApp.DbLink;
 using CsvHelper;
 using CsvHelper.Configuration;
 
@@ -13,31 +14,26 @@ namespace CsvCachedWebApp.Commands
 {
 
 
-    public class UpdateCsvCommand<T, U> : AbstractCommand
+    public class UpdateCsvFromDbCommand<T, U> : AbstractCommand
         where T : IDedRecord
         where U : IDedRecordClassMap<T>
     {
 
         public string path { get; set; }
         public string cacheName { get; set; }
-        public List<T> records { get; set; }
+        public IRecordRetriever<T> recordRetriever { get; set; }
 
-        public UpdateCsvCommand(string cacheName, string path, List<T> records)
+        public UpdateCsvFromDbCommand(string cacheName, string path, IRecordRetriever<T> recordRetriever)
         {
             this.path = path;
             this.cacheName = cacheName;
-            this.records = records;
+            this.recordRetriever = recordRetriever;
         }
 
         public override void execute()
         {
-            using(TextWriter textWriter = new StreamWriter(path))
-            using (CsvWriter writer = new CsvWriter(textWriter))
-            {
-                writer.Configuration.RegisterClassMap<U>();
-                writer.WriteRecords(records);
-            }
-
+            Command updateCsvCommand = new UpdateCsvCommand<T, U>(cacheName, path, recordRetriever.getRecords());
+            updateCsvCommand.execute();
         }
 
         public override void undo()
