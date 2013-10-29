@@ -40,7 +40,7 @@ namespace CsvCachedWebApp.Commands
                 if (recordRetriever != null)
                 {
                     Command updateCsvAndCacheCommand = new UpdateCsvAndCacheCommand<T, U>(cacheName, path, applicationStateBase, recordRetriever.getRecords());
-                    updateCsvAndCacheCommand.executeAsynchronously();
+                    updateCsvAndCacheCommand.execute();
                 }
             }
             catch (Exception ex)
