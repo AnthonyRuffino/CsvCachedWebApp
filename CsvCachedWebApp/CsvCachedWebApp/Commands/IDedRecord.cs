@@ -8,17 +8,15 @@ using CsvHelper.Configuration;
 
 namespace CsvCachedWebApp.Commands
 {
-    public abstract class IDedRecord
+
+    public interface IIDedRecord
     {
-        public string Id { get; set; }
+        string getId();
     }
 
-    public abstract class IDedRecordClassMap<T> : CsvClassMap<T> where T : IDedRecord
+    public abstract class IDedRecordClassMap<T> : CsvClassMap<T> where T : IIDedRecord
     {
-        public override void CreateMap()
-        {
-            Map(m => m.Id).Name("ID");
-        }
+
     }
 
 }

@@ -15,22 +15,24 @@ namespace CsvCachedWebApp.Commands
 
 
     public class UpdateCsvAndCacheCommand<T, U> : AbstractCommand
-        where T : IDedRecord
+        where T : IIDedRecord
         where U : IDedRecordClassMap<T>
     {
 
         public string path { get; set; }
         public string cacheName { get; set; }
         public List<T> records { get; set; }
+        public bool writeHeader { get; set; }
 
         private HttpApplicationStateBase applicationStateBase { get; set; }
 
-        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, List<T> records)
+        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, List<T> records, bool writeHeader = true)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.applicationStateBase = applicationStateBase;
             this.records = records;
+            this.writeHeader = writeHeader;
         }
 
         public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationState applicationState, List<T> records)
@@ -53,11 +55,16 @@ namespace CsvCachedWebApp.Commands
                         writer.Configuration.RegisterClassMap<U>();
                         repository = new Dictionary<string, T>();
 
+                        if (writeHeader)
+                        {
+                            writer.WriteHeader<T>();
+                        }
+
                         foreach (T record in records)
                         {
-                            if (record != null && !repository.ContainsKey(record.Id))
+                            if (record != null && !repository.ContainsKey(record.getId()))
                             {
-                                repository.Add(record.Id, record);
+                                repository.Add(record.getId(), record);
                                 writer.WriteRecord(record);
                             }
                         }
@@ -68,6 +75,10 @@ namespace CsvCachedWebApp.Commands
                     {
                         applicationStateBase[cacheName] = repository;
                     }
+                }
+                else
+                {
+                    Debug.WriteLine("records list was null.  Pass an empty list to clear a file and the cache. ");
                 }
             }
             catch (Exception ex)

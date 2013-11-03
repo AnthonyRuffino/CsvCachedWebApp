@@ -16,19 +16,21 @@ namespace CsvCachedWebApp.Commands
 
 
     public class UpdateCsvFromDbCommand<T, U> : AbstractCommand
-        where T : IDedRecord
+        where T : IIDedRecord
         where U : IDedRecordClassMap<T>
     {
 
         public string path { get; set; }
         public string cacheName { get; set; }
         public IRecordRetriever<T> recordRetriever { get; set; }
+        public bool writeHeader { get; set; }
 
-        public UpdateCsvFromDbCommand(string cacheName, string path, IRecordRetriever<T> recordRetriever)
+        public UpdateCsvFromDbCommand(string cacheName, string path, IRecordRetriever<T> recordRetriever, bool writeHeader = true)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.recordRetriever = recordRetriever;
+            this.writeHeader = writeHeader;
         }
 
         public override void execute()
@@ -37,7 +39,7 @@ namespace CsvCachedWebApp.Commands
             {
                 if (recordRetriever != null)
                 {
-                    Command updateCsvCommand = new UpdateCsvCommand<T, U>(cacheName, path, recordRetriever.getRecords());
+                    Command updateCsvCommand = new UpdateCsvCommand<T, U>(cacheName, path, recordRetriever.getRecords(), writeHeader);
                     updateCsvCommand.execute();
                 }
             }

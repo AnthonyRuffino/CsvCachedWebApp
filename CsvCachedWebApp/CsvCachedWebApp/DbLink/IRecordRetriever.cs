@@ -8,7 +8,7 @@ using CsvCachedWebApp.Commands;
 namespace CsvCachedWebApp.DbLink
 {
     public interface IRecordRetriever<T>
-        where T : IDedRecord
+        where T : IIDedRecord
     {
         List<T> getRecords();
     }

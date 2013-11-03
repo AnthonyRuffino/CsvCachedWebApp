@@ -15,7 +15,7 @@ namespace CsvCachedWebApp.Commands
 
 
     public class CacheCsvCommand<T, U> : AbstractCommand
-        where T : IDedRecord
+        where T : IIDedRecord
         where U : IDedRecordClassMap<T>
     {
 
@@ -56,9 +56,9 @@ namespace CsvCachedWebApp.Commands
                         {
                             T record = csv.GetRecord<T>();
 
-                            if (record != null && !repository.ContainsKey(record.Id))
+                            if (record != null && !repository.ContainsKey(record.getId()))
                             {
-                                repository.Add(record.Id, record);
+                                repository.Add(record.getId(), record);
                             }
 
                         }
