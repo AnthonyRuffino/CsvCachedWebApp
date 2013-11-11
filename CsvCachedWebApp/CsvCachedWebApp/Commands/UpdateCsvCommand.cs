@@ -46,7 +46,10 @@ namespace CsvCachedWebApp.Commands
                         {
                             writer.WriteHeader<T>();
                         }
-                        writer.WriteRecords(records);
+                        foreach (T record in records)
+                        {
+                            writer.WriteRecord(record);
+                        }
                     }
                 }
                 else
