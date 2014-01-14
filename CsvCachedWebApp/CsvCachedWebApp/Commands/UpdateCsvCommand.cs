@@ -23,13 +23,15 @@ namespace CsvCachedWebApp.Commands
         public string cacheName { get; set; }
         public List<T> records { get; set; }
         public bool writeHeader { get; set; }
+        public bool willThrowOnMissingField { get; set; }
 
-        public UpdateCsvCommand(string cacheName, string path, List<T> records, bool writeHeader = true)
+        public UpdateCsvCommand(string cacheName, string path, List<T> records, bool writeHeader = true, bool willThrowOnMissingField = false)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.records = records;
             this.writeHeader = writeHeader;
+            this.willThrowOnMissingField = willThrowOnMissingField;
         }
 
         public override void execute()
@@ -42,6 +44,7 @@ namespace CsvCachedWebApp.Commands
                     using (CsvWriter writer = new CsvWriter(textWriter))
                     {
                         writer.Configuration.RegisterClassMap<U>();
+                        writer.Configuration.WillThrowOnMissingField = willThrowOnMissingField;
                         if (writeHeader)
                         {
                             writer.WriteHeader<T>();

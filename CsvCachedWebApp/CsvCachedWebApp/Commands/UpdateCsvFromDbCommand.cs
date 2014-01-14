@@ -24,13 +24,15 @@ namespace CsvCachedWebApp.Commands
         public string cacheName { get; set; }
         public IRecordRetriever<T> recordRetriever { get; set; }
         public bool writeHeader { get; set; }
+        public bool willThrowOnMissingField { get; set; }
 
-        public UpdateCsvFromDbCommand(string cacheName, string path, IRecordRetriever<T> recordRetriever, bool writeHeader = true)
+        public UpdateCsvFromDbCommand(string cacheName, string path, IRecordRetriever<T> recordRetriever, bool writeHeader = true, bool willThrowOnMissingField = false)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.recordRetriever = recordRetriever;
             this.writeHeader = writeHeader;
+            this.willThrowOnMissingField = willThrowOnMissingField;
         }
 
         public override void execute()
@@ -39,7 +41,7 @@ namespace CsvCachedWebApp.Commands
             {
                 if (recordRetriever != null)
                 {
-                    Command updateCsvCommand = new UpdateCsvCommand<T, U>(cacheName, path, recordRetriever.getRecords(), writeHeader);
+                    Command updateCsvCommand = new UpdateCsvCommand<T, U>(cacheName, path, recordRetriever.getRecords(), writeHeader, willThrowOnMissingField);
                     updateCsvCommand.execute();
                 }
             }

@@ -23,16 +23,18 @@ namespace CsvCachedWebApp.Commands
         public string cacheName { get; set; }
         public List<T> records { get; set; }
         public bool writeHeader { get; set; }
+        public bool willThrowOnMissingField { get; set; }
 
         private HttpApplicationStateBase applicationStateBase { get; set; }
 
-        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, List<T> records, bool writeHeader = true)
+        public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, List<T> records, bool writeHeader = true, bool willThrowOnMissingField = false)
         {
             this.path = path;
             this.cacheName = cacheName;
             this.applicationStateBase = applicationStateBase;
             this.records = records;
             this.writeHeader = writeHeader;
+            this.willThrowOnMissingField = willThrowOnMissingField;
         }
 
         public UpdateCsvAndCacheCommand(string cacheName, string path, HttpApplicationState applicationState, List<T> records)
@@ -53,6 +55,7 @@ namespace CsvCachedWebApp.Commands
                     using (CsvWriter writer = new CsvWriter(textWriter))
                     {
                         writer.Configuration.RegisterClassMap<U>();
+                        writer.Configuration.WillThrowOnMissingField = willThrowOnMissingField;
                         repository = new Dictionary<string, T>();
 
                         if (writeHeader)

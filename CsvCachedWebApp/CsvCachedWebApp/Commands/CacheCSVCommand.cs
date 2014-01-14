@@ -21,10 +21,11 @@ namespace CsvCachedWebApp.Commands
 
         public string path { get; set; }
         public string cacheName { get; set; }
+        public bool willThrowOnMissingField { get; set; }
 
         private HttpApplicationStateBase applicationStateBase { get; set; }
 
-        public CacheCsvCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase)
+        public CacheCsvCommand(string cacheName, string path, HttpApplicationStateBase applicationStateBase, bool willThrowOnMissingField = false)
         {
             this.path = path;
             this.cacheName = cacheName;
@@ -51,6 +52,7 @@ namespace CsvCachedWebApp.Commands
                         repository = new Dictionary<string, T>();
 
                         csv.Configuration.RegisterClassMap<U>();
+                        csv.Configuration.WillThrowOnMissingField = willThrowOnMissingField;
 
                         while (csv.Read())
                         {
